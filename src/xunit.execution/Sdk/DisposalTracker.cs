@@ -23,8 +23,10 @@ namespace Xunit.Sdk
         /// <inheritdoc/>
         public void Dispose()
         {
-            foreach (var disposable in toDispose)
-                disposable.Dispose();
+            for (int i = 0; i < toDispose.Count; ++i)
+            {
+                toDispose.Pop()?.Dispose();
+            }
 
             toDispose.Clear();
         }
