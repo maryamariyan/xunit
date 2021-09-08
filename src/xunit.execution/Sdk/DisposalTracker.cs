@@ -23,7 +23,7 @@ namespace Xunit.Sdk
         /// <inheritdoc/>
         public void Dispose()
         {
-            for (int i = 0; i < toDispose.Count; ++i)
+            for (int i = toDispose.Count; i > 0; --i)
             {
                 toDispose.Pop()?.Dispose();
             }
