@@ -2,6 +2,8 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit.Abstractions;
 
 namespace Xunit.Sdk
@@ -39,7 +41,10 @@ namespace Xunit.Sdk
 
             var disposable = result as IDisposable;
             if (disposable != null)
+            {
+                Console.WriteLine($"add - thread id: {System.Threading.Thread.CurrentThread.ManagedThreadId}, stacktrace: {System.Environment.StackTrace}");
                 disposalTracker.Add(disposable);
+            }
 
             return result;
         }
@@ -50,6 +55,7 @@ namespace Xunit.Sdk
         public static void Dispose()
         {
             instances.Clear();
+            Console.WriteLine($"dispose - thread id: {System.Threading.Thread.CurrentThread.ManagedThreadId}, stacktrace: {System.Environment.StackTrace}");
             disposalTracker.Dispose();
         }
 

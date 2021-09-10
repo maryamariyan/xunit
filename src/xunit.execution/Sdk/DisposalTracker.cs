@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace Xunit.Sdk
 {
@@ -9,7 +9,7 @@ namespace Xunit.Sdk
     /// </summary>
     public class DisposalTracker : IDisposable
     {
-        readonly Stack<IDisposable> toDispose = new Stack<IDisposable>();
+        readonly ConcurrentStack<IDisposable> toDispose = new ConcurrentStack<IDisposable>();
 
         /// <summary>
         /// Add an object to be disposed.
@@ -25,7 +25,11 @@ namespace Xunit.Sdk
         {
             for (int i = toDispose.Count; i > 0; --i)
             {
-                toDispose.Pop()?.Dispose();
+                IDisposable obj;
+                // keep trying until TryPop succeeds
+                while (!toDispose.TryPop(out obj));
+
+                obj.Dispose();
             }
 
             toDispose.Clear();
